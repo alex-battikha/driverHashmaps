@@ -1,62 +1,77 @@
 package westview.ds;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-
 public class DriverHashmaps {
-	
-	//Updated Class
-	public static void main(String[] args) {
-		Scanner inputScanner = new Scanner(System.in);
-        System.out.println("Enter Capitalized State Name: ");
-        String input = inputScanner.nextLine();
-        inputScanner.close();
-        System.out.println("Retrieving Data for " + input + "...");
-		
+	public static void main(String[]args) {
 		HashMap m = new HashMap<String, String>();
 		
-		//adding entries
-//		m.put("nice", "mean");
-//		m.put("motivated", "lazy");
-//		m.put("rich", "poor");
-		
-		//query the map for a non-existing key
-//		System.out.println(m.get("study"));
-//		
-//		System.out.println(m.get("rich"));
-//		
-//		System.out.println(m.size());
-//		
-//		HashMap m2 = new HashMap<String, ArrayList<String>>();
-//		
-//		ArrayList<String> food = new ArrayList<String>();
-//		food.add("Pasta");
-//		food.add("Coffee");
-//		food.add("Cake");
-//		food.add("Boba");
-//		
-//		m2.put("Mr. David", "food");
-//		
-//		System.out.println(m2.get("Mr. David"));
+		HashMap StateMap = new HashMap<String, ArrayList<String>>();
+		HashMap CityMap = new HashMap<String, ArrayList<String>>();
 		
 		try {
-			System.out.println("Reading...");
-			File file = new File("covid417.csv");
-			Scanner scanner = new Scanner(file);
-			
+			Scanner scanner = new Scanner(new File("covid417.csv"));
+			scanner.nextLine();
 			while(scanner.hasNext()) {
-				String[] fullArr = scanner.nextLine().split(",");
+				String[] Line = scanner.nextLine().split(",");
+				
+				String city = Line[0];
+				//.System.out.println(city);
+				String state = Line[1];
+				//System.out.println(state);
+								
+				int confirmed = Integer.parseInt(Line[2]);
+				int active = Integer.parseInt(Line[5]);
+//				System.out.println(confirmed);
+				if(StateMap.containsKey(state)) {
+					int total = confirmed;
+					StateMap.replace(state, total);
+				}
+				else {
+					StateMap.put(state, 0);
+				}
+				
+				//System.out.println(StateMap);
+				CityMap.put(city +" "+ state, confirmed);
 			}
 			
+			while(true) {
+				Scanner inputScannerState = new Scanner(System.in);
+		        System.out.println("Enter State Name: ");
+		        String inputState = inputScannerState.nextLine().toLowerCase();
+		        inputState = inputState.substring(0, 1).toUpperCase() + inputState.substring(1);
+		        if(StateMap.get(inputState) != null) {
+			        System.out.println("Retrieving Data for " + inputState + "...");
+					inputScannerState.close();
+					System.out.println("Confirmed Cases for " + inputState + ": " + StateMap.get(inputState));
+			        break;
+		        }
+		        else {
+		        	continue;
+		        }     
+			}
+			System.out.println();
+
+			while(true) {
+				Scanner inputScannerCity = new Scanner(System.in);
+		        System.out.println("Enter City Name: ");
+		        String inputCity = inputScannerCity.nextLine().toLowerCase();
+		        inputCity = inputCity.substring(0, 1).toUpperCase() + inputCity.substring(1);
+		        if(StateMap.get(inputCity) != null) {
+			        System.out.println("Retrieving Data for " + inputCity + "...");
+			        inputScannerCity.close();
+					System.out.println("Confirmed Cases for " + inputCity + ": " + StateMap.get(inputCity));
+			        break;
+		        }
+		        else {
+		        	continue;
+		        }     
+			}
 			
 			scanner.close();
-		}
-		
-		catch(Exception e) {
-			
+		} catch(Exception e) {
+			System.out.println(e);
 		}
 	}
-	
 }

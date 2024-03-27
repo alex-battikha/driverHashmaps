@@ -1,0 +1,64 @@
+package westview.ds;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class DriverHashmaps {
+	public static void main(String[]args) {
+		// map of state strings with each string having its own hashmap of cities. At the end of the hasmap of cities there will be an entry called total
+		HashMap<String, HashMap<String, Integer>> map = new HashMap<String, HashMap<String, Integer>>();
+		
+		try {
+			Scanner scanner = new Scanner(new File("H:/git/allanhotpotato/DS-Github/DS/covid417.csv"));
+			scanner.nextLine();
+			
+			while(scanner.hasNext()) {
+				
+				String [] Line = scanner.nextLine().split(",");
+				String cityName = Line[0].toLowerCase();
+				String stateTitle = Line[1].toLowerCase();
+				
+				int confirmedCases  = Integer.parseInt(Line[2]);
+				if(map.containsKey(stateTitle)) { //if the state already exists: append the new value to the old value and replace the old value
+					HashMap<String, Integer> cities = map.get(stateTitle);
+					
+					int total = cities.get("total") + confirmedCases;
+					cities.replace("total", total);
+					cities.put(cityName, confirmedCases);
+				}
+				else { //create new city easily if the city doesn't exist.
+					HashMap<String, Integer> cities = new HashMap<String, Integer>();
+					
+					cities.put("total", confirmedCases);
+					cities.put(cityName, confirmedCases);
+					
+					map.put(stateTitle, cities);
+				}				
+			}
+			scanner.close();
+		} 
+		catch(Exception e) {
+			System.out.println("ERROR: Invalid CSV file input.");
+		}
+		
+		while (true) {
+			try {
+				Scanner reader = new Scanner(System.in);
+				System.out.println("State input: ");
+				String stateInput = reader.nextLine();
+				
+				System.out.println("Overall onfirmed cases in the state of " + stateInput + " is: " + map.get(stateInput.toLowerCase()).get("total") + "\n");
+		
+				System.out.println("City input: ");
+				String cityInput = reader.nextLine();
+				
+				System.out.println("Confirmed cases in the city of " + cityInput + " in the state of " + stateInput + " is: " + map.get(stateInput.toLowerCase()).get(cityInput.toLowerCase()));
+				System.out.println("--------------------------------------------------------\n");
+			} catch (Exception e) {
+				System.out.println(" Please try again. Invalid input. \n");
+			}
+		}
+	}
+}
